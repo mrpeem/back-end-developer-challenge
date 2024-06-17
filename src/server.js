@@ -11,6 +11,8 @@ const healRoutes = require('./routes/heal');
 const temporaryHPRoutes = require('./routes/temporaryHP');
 const infoRoutes = require('./routes/info');
 
+const swaggerDocs = require('./swagger');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/damage', damageRoutes);
@@ -21,11 +23,17 @@ app.use('/info', infoRoutes);
 const data = JSON.parse(fs.readFileSync('briv.json', 'utf8'));
 let db; 
 
-// initialize and populate database
+// initialize, populate database, then start server
 (async () => {
   try {
     db = await dbModule.getDbInstance();
     dbModule.populate(db, data);
+
+    // start server after valid database connection
+    app.listen(PORT, () => {
+      console.log(`Server listening on port ${PORT}`);  
+      swaggerDocs(app, PORT);  // Move swaggerDocs inside the listen callback
+    });
   } catch (error) {
     console.error('Failed to initialize database connection:', error);
   }
@@ -56,8 +64,4 @@ const handleExit = async (signal) => {
 // handler for process exit and termination signals
 ['SIGINT', 'SIGTERM', 'SIGUSR2'].forEach(signal => {
   process.once(signal, () => handleExit(signal));
-});
-
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);  
 });

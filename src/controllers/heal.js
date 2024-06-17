@@ -4,7 +4,7 @@ const dbHelper = require('../db/dbHelper');
 const heal = async (req, res) => {
   const { name, hitPoints } = req.body;
 
-  if (!name || !hitPoints) {
+  if (!name || hitPoints === undefined) {
     return res.status(400).json({ error: 'Missing required fields in request body.' });
   }
 

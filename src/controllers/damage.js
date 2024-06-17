@@ -24,8 +24,14 @@ const damageReceived = async (req, res) => {
 
     res.json({
       damageReceived: attackDamage,
-      hitPoints: updatedHitPoints.hitPoints,
-      tempHitPoints: updatedHitPoints.tempHitPoints
+      updatedHitPoints: {
+        hitPoints: updatedHitPoints.hitPoints,
+        tempHitPoints: updatedHitPoints.tempHitPoints
+      },
+      originalHitPoints: {
+        hitPoints: character.hitPoints,
+        tempHitPoints: character.tempHitPoints
+      }
     });
   } catch (error) {
     res.status(500).json(`error ${error}`)

@@ -3,7 +3,7 @@ const dbHelper = require('../db/dbHelper');
 
 const addTempHP = async (req, res) => {
   const { name, hitPoints: tempHitPoints } = req.body;
-  if (!name || !tempHitPoints) {
+  if (!name || tempHitPoints === undefined) {
     return res.status(400).json({ error: 'Missing required fields in request body.' });
   }
 
