@@ -1,6 +1,6 @@
 # DDB Back End Developer Challenge
 
-(Link to the original README)[https://github.com/mrpeem/back-end-developer-challenge/blob/master/README.md]
+[Link to the original README](https://github.com/mrpeem/back-end-developer-challenge/blob/master/README.md)
 
 ### Instructions to Run Locally
 1. Clone this repository
