@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const PORT = 3000;
@@ -20,14 +21,30 @@ app.use('/heal', healRoutes);
 app.use('/temporary-hp', temporaryHPRoutes);
 app.use('/info', infoRoutes);
 
-const data = JSON.parse(fs.readFileSync('briv.json', 'utf8'));
-let db; 
+// read all json files in configs directory and ignore configs with duplicate names
+const loadConfigs = () => {
+  const configsDir = path.join(__dirname, 'configs');
+  const files = fs.readdirSync(configsDir);
+  const configs = files.map(file => {
+    const filePath = path.join(configsDir, file);
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  });
+  const uniqueCharacter = {};
+  return configs.reduce((acc, character) => {
+    if (!uniqueCharacter[character.name]) {
+      uniqueCharacter[character.name] = true;
+      acc.push(character);
+    }
+    return acc;
+  }, []);
+}
+const configs = loadConfigs();
 
 // initialize, populate database, then start server
 (async () => {
   try {
-    db = await dbModule.getDbInstance();
-    dbModule.populate(db, data);
+    const db = await dbModule.getDbInstance();
+    await Promise.all(configs.map(config => dbModule.populate(config)));
 
     // start server after valid database connection
     app.listen(PORT, () => {
@@ -43,7 +60,7 @@ let db;
 const cleanup = async () => {
   console.log("Cleaning up...");
   try {
-    await dbModule.cleanup(db, data.name);
+    await Promise.all(configs.map(config => dbModule.cleanup(config.name)));
     console.log("Cleanup successful.");
   } catch (err) {
     console.error("Error cleaning up:", err);

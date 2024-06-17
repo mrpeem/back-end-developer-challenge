@@ -9,9 +9,8 @@ const heal = async (req, res) => {
   }
 
   try {
-    const db = await dbModule.getDbInstance();
-    await dbHelper.updateHitPoints(db, name, hitPoints);
-    const updatedHitPoints = await dbHelper.fetchHitPoints(db, name);
+    await dbHelper.updateHitPoints(name, hitPoints);
+    const updatedHitPoints = await dbHelper.fetchHitPoints(name);
 
     res.status(200).json({ hitPoints: updatedHitPoints.hitPoints });
   } catch (error) {

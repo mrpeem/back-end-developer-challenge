@@ -12,19 +12,17 @@ const fetchInfo = async (req, res) => {
   const characterName = req.params.name;
 
   try {
-    const db = await dbModule.getDbInstance();
-
-    const character = await dbHelper.fetchCharacterInfo(db, characterName);
+    const character = await dbHelper.fetchCharacterInfo(characterName);
     if (!character) {
       res.status(404).json({ error: "Character not found" });
       return;
     }
 
     const [classes, stats, items, defenses] = await Promise.all([
-      dbHelper.fetchClasses(db, characterName), 
-      dbHelper.fetchStats(db, characterName),
-      dbHelper.fetchItems(db, characterName),
-      dbHelper.fetchDefenses(db, characterName)
+      dbHelper.fetchClasses(characterName), 
+      dbHelper.fetchStats(characterName),
+      dbHelper.fetchItems(characterName),
+      dbHelper.fetchDefenses(characterName)
     ]);
 
     res.status(200).json({
@@ -43,8 +41,7 @@ const fetchHitPoints = async (req, res) => {
   const characterName = req.params.name;
 
   try {
-    const db = await dbModule.getDbInstance();
-    const hitPoints = await dbHelper.fetchHitPoints(db, characterName);
+    const hitPoints = await dbHelper.fetchHitPoints(characterName);
         
     if (hitPoints === null) {
       return res.status(404).json({ error: 'Character not found.' });
@@ -63,15 +60,13 @@ const fetchClasses = async (req, res) => {
   const characterName = req.params.name;
 
   try {
-    const db = await dbModule.getDbInstance();
-
-    const character = await dbHelper.fetchCharacterInfo(db, characterName);
+    const character = await dbHelper.fetchCharacterInfo(characterName);
     if (!character) {
       res.status(404).json({ error: "Character not found" });
       return;
     }
 
-    const classes = await dbHelper.fetchClasses(db, characterName);
+    const classes = await dbHelper.fetchClasses(characterName);
 
     res.status(200).json({classes: classes});
   } catch (error) {
@@ -84,15 +79,13 @@ const fetchStats = async (req, res) => {
   const characterName = req.params.name;
 
   try {
-    const db = await dbModule.getDbInstance();
-
-    const character = await dbHelper.fetchCharacterInfo(db, characterName);
+    const character = await dbHelper.fetchCharacterInfo(characterName);
     if (!character) {
       res.status(404).json({ error: "Character not found" });
       return;
     }
 
-    const stats = await dbHelper.fetchStats(db, characterName);
+    const stats = await dbHelper.fetchStats(characterName);
 
     res.status(200).json({stats: stats});
   } catch (error) {
@@ -104,15 +97,13 @@ const fetchItems = async (req, res) => {
   const characterName = req.params.name;
 
   try {
-    const db = await dbModule.getDbInstance();
-
-    const character = await dbHelper.fetchCharacterInfo(db, characterName);
+    const character = await dbHelper.fetchCharacterInfo(characterName);
     if (!character) {
       res.status(404).json({ error: "Character not found" });
       return;
     }
 
-    const items = await dbHelper.fetchItems(db, characterName);
+    const items = await dbHelper.fetchItems(characterName);
 
     res.status(200).json({items: items});
   } catch (error) {
@@ -124,15 +115,13 @@ const fetchDefenses = async (req, res) => {
   const characterName = req.params.name;
 
   try {
-    const db = await dbModule.getDbInstance();
-
-    const character = await dbHelper.fetchCharacterInfo(db, characterName);
+    const character = await dbHelper.fetchCharacterInfo(characterName);
     if (!character) {
       res.status(404).json({ error: "Character not found" });
       return;
     }
 
-    const defenses = await dbHelper.fetchDefenses(db, characterName);
+    const defenses = await dbHelper.fetchDefenses(characterName);
 
     res.status(200).json({defenses: defenses});
   } catch (error) {

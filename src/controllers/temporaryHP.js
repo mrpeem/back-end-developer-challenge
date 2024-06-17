@@ -8,20 +8,17 @@ const addTempHP = async (req, res) => {
   }
 
   try {
-    const db = await dbModule.getDbInstance();
-    
-    const character = await dbHelper.fetchCharacterInfo(db, name);
+    const character = await dbHelper.fetchCharacterInfo(name);
     if (!character) {
       res.status(404).json({ error: "Character not found" });
       return;
     }
 
     const hitPointsDelta = 0; // no change to regular hit points, so setting it as 0
-    const currentTempHitPoints = character.tempHitPoints;
 
-    if (tempHitPoints > currentTempHitPoints) {
-      await dbHelper.updateHitPoints(db, name, hitPointsDelta, tempHitPoints);
-      const updatedHitPoints = await dbHelper.fetchHitPoints(db, name);
+    if (tempHitPoints > character.tempHitPoints) {
+      await dbHelper.updateHitPoints(name, hitPointsDelta, tempHitPoints);
+      const updatedHitPoints = await dbHelper.fetchHitPoints(name);
       res.status(200).json({ 
         message: 'tempHitPoints updated successfully.',
         tempHitPoints: updatedHitPoints.tempHitPoints
@@ -29,7 +26,7 @@ const addTempHP = async (req, res) => {
     } else {
       res.status(200).json({
         message: 'tempHitPoints not updated as the new value is not greater than the existing value.',
-        tempHitPoints: currentTempHitPoints
+        tempHitPoints: character.tempHitPoints
       });
     }
     

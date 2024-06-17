@@ -41,3 +41,5 @@
 
       The initialization function also takes into account a fresh start or an application restart. This repo will contain an existing database (`src/db/db.db`), but the file can safely be removed/deleted and it will get recreated and reinitialized upon the next application start. 
   
+  5. **Configs**: This program reads json files from `src/configs/` and stores it in the database. As long as the format of the data is the same as the one in `briv.json`, additional character config files can be added to the directory and the program will be able to run without any issues. If there are duplicate names, only the first instance of the config will be used and populated.
+  

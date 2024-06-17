@@ -1,0 +1,40 @@
+{
+  "name": "Test",
+  "level": 10,
+  "hitPoints": 30,
+  "classes": [
+    {
+    "name":"fighter",
+    "hitDiceValue":10,
+    "classLevel":5
+    }
+  ],
+  "stats":{
+    "strength":15,
+    "dexterity":12,
+    "constitution":14,
+    "intelligence":13,
+    "wisdom":10,
+    "charisma":8
+  },
+  "items":[
+    {
+      "name":"Ioun Stone of Fortitude",
+      "modifier":{
+        "affectedObject":"stats",
+        "affectedValue":"constitution",
+        "value":2
+      }
+    }
+  ],
+  "defenses":[
+    {
+      "type":"bludgeoning",
+      "defense":"immunity"
+    },
+    {
+      "type":"cold",
+      "defense":"resistance"
+    }
+  ]
+}
