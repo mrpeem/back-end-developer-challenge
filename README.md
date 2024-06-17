@@ -1,5 +1,7 @@
 # DDB Back End Developer Challenge
 
+(Link to the original README)[https://github.com/mrpeem/back-end-developer-challenge/blob/master/README.md]
+
 ### Instructions to Run Locally
 1. Clone this repository
 2. Run `npm install` to install dependencies
@@ -29,7 +31,7 @@
       > always taking the higher value
 
       It is assumed that this means that the higher value of the temporary HP will be used. For example, if a character currently has 5 temporary HP, and the endpoint is called again to add 2 temporary HP, the value will remain 5 as it is greater than the value being added. Conversely, if 10 temporary HP are being added, then the new value will be 10
-      
+
   4. **Database**: This is stated in the description
       > The task requires building a service that ... persists throughout the application's lifetime.
 
