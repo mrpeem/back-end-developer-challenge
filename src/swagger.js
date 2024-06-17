@@ -15,16 +15,13 @@ const options = {
       }
     ]
   },
-  // Make sure this path includes all route files with JSDoc comments
   apis: ['./src/routes/*.js'],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
 const swaggerDocs = (app, port) => {
-  // Swagger Page
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  // Documentation in JSON format
   app.get('/docs.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);

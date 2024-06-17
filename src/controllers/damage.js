@@ -3,6 +3,28 @@ const dbHelper = require('../db/dbHelper');
 
 const damageReceived = async (req, res) => {
   const { name, damage, type } = req.body;
+  const damageTypes = new Set([
+    'bludgeoning',
+    'piercing',
+    'slashing',
+    'fire',
+    'cold',
+    'acid',
+    'thunder',
+    'lightning',
+    'poison',
+    'radiant',
+    'necrotic',
+    'psychic',
+    'force'
+  ]);
+
+  if (!damageTypes.has(type.toLowerCase())) { // not a valid damage type
+    res.status(400).json({ 
+      error: `Invalid damage type. Possible damage types are: [${Array.from(damageTypes).join(', ')}]`
+    });
+    return;
+  }
 
   try {
     const db = await dbModule.getDbInstance();
