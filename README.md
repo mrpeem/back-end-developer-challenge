@@ -1,63 +1,43 @@
 # DDB Back End Developer Challenge
 
-### Overview
-This task focuses on creating an API for managing a player character's Hit Points (HP) within our game. The API will enable clients to perform various operations related to HP, including dealing damage of different types, considering character resistances and immunities, healing, and adding temporary Hit Points. The task requires building a service that interacts with HP data provided in the `briv.json` file and persists throughout the application's lifetime.
-
-### Task Requirements
-
-#### API Operations
-1. **Deal Damage**
-    - Implement the ability for clients to deal damage of different types (e.g., bludgeoning, fire) to a player character.
-    - Ensure that the API calculates damage while considering character resistances and immunities.
-
-    > Suppose a player character is hit by an attack that deals Piercing damage, and the attacker rolls a 14 on the damage's Hit Die (with a Piercing damage type). `[Character Hit Points - damage: 25 - 14 = 11]`
-
-2. **Heal**
-    - Enable clients to heal a player character, increasing their HP.
-
-3. **Add Temporary Hit Points**
-    - Implement the functionality to add temporary Hit Points to a player character.
-    - Ensure that temporary Hit Points follow the rules: they are not additive, always taking the higher value, and cannot be healed.
-
-    > Imagine a player character named "Eldric" currently has 11 Hit Points (HP) and no temporary Hit Points. He finds a magical item that grants him an additional 10 HP during the next fight. When the attacker rolls a 19, Eldric will lose all 10 temporary Hit Points and 9 from his player HP.
-
-#### Implementation Details
-- Build the API using either C# or NodeJS.
-- Ensure that character information, including HP, is initialized during the start of the application. Developers do not need to calculate HP; it is provided in the `briv.json` file.
-- Retrieve character information, including HP, from the `briv.json` file.
-
-
-#### Data Storage
-- You have the flexibility to choose the data storage method for character information.
+[Link to the original README](https://github.com/mrpeem/back-end-developer-challenge/blob/master/README.md)
 
 ### Instructions to Run Locally
-1. Clone the repository or obtain the project files.
-2. Install any required dependencies using your preferred package manager.
-3. Configure the API with necessary settings (e.g., database connection if applicable).
-4. Build and run the API service locally.
-5. Utilize the provided `briv.json` file as a sample character data, including HP, for testing the API.
+1. Clone this repository
+2. Run `npm install` to install dependencies
+3. Run `npm start` to start the server
 
-### Additional Notes
-- Temporary Hit Points take precedence over the regular HP pool and cannot be healed.
-- Characters with resistance take half damage, while characters with immunity take no damage from a damage type.
-- Use character filename as identifier
+### API Operations
+- The port is 3000. Once the server is running, go to `http://localhost:3000/docs/` to view info about all endpoints this application supports
+- To call the endpoints, use cURL, Postman, or any other tools of choice. The endpoints can also be hit directly on the SwaggerUI `(/docs)` as well
 
-#### Possible Damage Types in D&D
-Here is a list of possible damage types that can occur in Dungeons & Dragons (D&D). These damage types should be considered when dealing damage or implementing character resistances and immunities:
-- Bludgeoning
-- Piercing
-- Slashing
-- Fire
-- Cold
-- Acid
-- Thunder
-- Lightning
-- Poison
-- Radiant
-- Necrotic
-- Psychic
-- Force
+### Implementation Details
+- Some liberties and assumptions were made in the designing of this application as the original README was not specific about certain details <br>
+  1. **Damage**: 
+    - The assumption is that hit points will not go below 0, even if the attacking damage is greater than the current HP. After HP value is 0, there is no dying penalty of any kind, and the character can be healed back up normally
+    - It is assumed that the following damage types are valid:
+      > bludgeoning, piercing, slashing, fire, cold, acid, thunder, lightning, poison, radiant, necrotic, psychic, force
 
-If you have any questions or require clarification, please reach out to your Wizards of the Coast contact, and we will provide prompt assistance.
+      Any damage types not in this list are considered invalid and an error will be thrown
 
-Good luck with the implementation!
+  2. **Health**: The maximum hit points of a character was never stated. The file `briv.json` shows HP, but it is unclear whether that is the maximum HP for the character at that level. As such, the program is implemented such HPs can be healed up to inifinity
+
+  3. **Temporary hit points**: 
+    - It was never stated how long temporary HP lasts. This is what the example states:
+      > He finds a magical item that grants him an additional 10 HP during the next fight
+    
+      As such, it is assumed that temporary HP will only be valid until the next battle/damage-received event and will reset back to 0 even if it is not used up. Consider the following situation: a character has 10 HP and 10 temporary HP. The character receives 5 damage. The character will now be left with 10 HP and 0 temporary HP. 
+    - There is also this part regarding the rules about temporary HP:
+      > always taking the higher value
+
+      It is assumed that this means that the higher value of the temporary HP will be used. For example, if a character currently has 5 temporary HP, and the endpoint is called again to add 2 temporary HP, the value will remain 5 as it is greater than the value being added. Conversely, if 10 temporary HP are being added, then the new value will be 10
+
+  4. **Database**: This is stated in the description
+      > The task requires building a service that ... persists throughout the application's lifetime.
+
+      It is assumed that the data will only need to persist throughout the lifetime of the application and resets. The database used is `SQLite3` and can be found under `src/db/db.db`. This type of data persists regardless of server restarts. However, the choice was made to clean the database upon application exit and reinitialize it for every new run of the application in order to reset to a default state and allow for more thorough testing.
+
+      The database initialization is designed with a singleton principle in mind, so only one connection will be made per server start in order to reduce latency associated with creating a new connection for each call.
+
+      The initialization function also takes into account a fresh start or an application restart. This repo will contain an existing database (`src/db/db.db`), but the file can safely be removed/deleted and it will get recreated and reinitialized upon the next application start. 
+  
